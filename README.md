@@ -4,3 +4,19 @@
 - Ec2 서버 구축 (완료)
 - 서브 도메인 (dev/prod) ssl 적용 (완료)
 - ERD 설계 1차 (완료)
+
+**서브 도메인 (dev/prod) ssl 적용 (완료)**
+
+Lets encrypt를 사용하여 서브도메인인 dev.devsanha.site, prod.devsanha.site에 ssl 인증 적용을 해주었습니다.
+
+`# certbot --nginx -d 추가할 도메인 -d 추가할 도메인`
+
+**ERD 설계 1차**
+
+에어비엔비 웹사이트를 바탕으로 데이터들의 관계를 파악하여 1차 erd를 설계해 보았습니다. (피드백 후 수정예정)
+
+`status`의 데이터 타입을 *tinyint* 와 *varchar* 사이에 고민을 하였습니다.
+varchar의 경우 상태 정보가 보다 명시적이어서 클라이언트가 파악하기 쉽다는 장점이 있고, tinyint는 데이터의 크기가 varchar보다 적게 사용된다는 장점이 있었습니다.
+
+처음 클라이언트와 협업해 보는 것이고 많은 데이터가 사용될거 같지는 않아서 `varchar` 타입을 선택하게 되었습니다.
+
