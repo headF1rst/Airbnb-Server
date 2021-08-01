@@ -3,91 +3,70 @@ const userProvider = require("../../app/User/userProvider");
 const userService = require("../../app/User/userService");
 const baseResponse = require("../../../config/baseResponseStatus");
 const {response, errResponse} = require("../../../config/response");
-
 const regexEmail = require("regex-email");
 const {emit} = require("nodemon");
 
 /**
  * API No. 1
  * API Name : 유저 생성 (회원가입) API
- * [POST] /app/users
+ * [POST] /app/signin
  */
 exports.postUsers = async function (req, res) {
 
     /**
      * Body: email, password, nickname
      */
-    const {email, password, nickname} = req.body;
+    const {name, birth, email, password} = req.body;
 
     // 빈 값 체크
-    if (!email)
-        return res.send(response(baseResponse.SIGNUP_EMAIL_EMPTY));
+    if (!email) return res.send(response(baseResponse.SIGNUP_EMAIL_EMPTY));
 
     // 길이 체크
-    if (email.length > 30)
-        return res.send(response(baseResponse.SIGNUP_EMAIL_LENGTH));
+    if (email.length > 30) return res.send(response(baseResponse.SIGNUP_EMAIL_LENGTH));
 
     // 형식 체크 (by 정규표현식)
-    if (!regexEmail.test(email))
-        return res.send(response(baseResponse.SIGNUP_EMAIL_ERROR_TYPE));
+    if (!regexEmail.test(email)) return res.send(response(baseResponse.SIGNUP_EMAIL_ERROR_TYPE));
 
-    // 기타 등등 - 추가하기
+    // 비밀번호 비었는지 체크
+    if (!password) return res.send(response(baseResponse.SIGNUP_PASSWORD_EMPTY));
 
+    // TODO 비밀번호 validation 처리 추가 (8자리 이상, 이름 및 메일주소 포함X, 숫자 or 기호 포함)
+    
+    // 이름 비었는지 체크
+    if (!name) return res.send(response(baseResponse.SIGNUP_NAME_EMPTY));
+    
+    // 생년월일 비었는지 체크
+    if(!birth) return res.send(response(baseResponse.SIGNUP_BIRTH_EMPTY));
 
-    const signUpResponse = await userService.createUser(
-        email,
-        password,
-        nickname
-    );
+    // 생년월일 yyyy/mm/dd, over 18 validation check
+    var regexBirth = /^([0-9]{4}[-/]?((0[13-9]|1[012])[-/]?(0[1-9]|[12][0-9]|30)|(0[13578]|1[02])[-/]?31|02[-/]?(0[1-9]|1[0-9]|2[0-8]))|([0-9]{2}(([2468][048]|[02468][48])|[13579][26])|([13579][26]|[02468][048]|0[0-9]|1[0-6])00)[-/]?02[-/]?29)$/;
 
+    if(regexBirth.test(birth))
+    {
+        var parts = birth.split("/");
+        var dtDOB = new Date(parts[1] + "/" + parts[2] + "/" + parts[0]);
+        var dtCurrent = new Date();
+        if(dtCurrent.getFullYear() - dtDOB.getFullYear() < 18) return res.send(response(baseResponse.INVALID_AGE));
+        if(dtCurrent.getFullYear() - dtDOB.getFullYear() == 18)
+        {
+            if(dtCurrent.getMonth() < dtDOB.getMonth()) return res.send(response(baseResponse.INVALID_AGE));
+            if(dtCurrent.getMonth() == dtDOB.getMonth())
+            {
+                if(dtCurrent.getDate() < dtDOB.getDate()) return res.send(response(baseResponse.INVALID_AGE));
+            }
+        }
+    }
+    if(!regexBirth.test(birth))
+    {
+        return res.send(response(baseResponse.DOB_FORMAT_ERR));
+    }
+
+    const signUpResponse = await userService.createUser(name, birth, email, password);
     return res.send(signUpResponse);
 };
 
 /**
  * API No. 2
- * API Name : 유저 조회 API (+ 이메일로 검색 조회)
- * [GET] /app/users
- */
-exports.getUsers = async function (req, res) {
-
-    /**
-     * Query String: email
-     */
-    const email = req.query.email;
-
-    if (!email) {
-        // 유저 전체 조회
-        const userListResult = await userProvider.retrieveUserList();
-        return res.send(response(baseResponse.SUCCESS, userListResult));
-    } else {
-        // 유저 검색 조회
-        const userListByEmail = await userProvider.retrieveUserList(email);
-        return res.send(response(baseResponse.SUCCESS, userListByEmail));
-    }
-};
-
-/**
- * API No. 3
- * API Name : 특정 유저 조회 API
- * [GET] /app/users/{userId}
- */
-exports.getUserById = async function (req, res) {
-
-    /**
-     * Path Variable: userId
-     */
-    const userId = req.params.userId;
-
-    if (!userId) return res.send(errResponse(baseResponse.USER_USERID_EMPTY));
-
-    const userByUserId = await userProvider.retrieveUser(userId);
-    return res.send(response(baseResponse.SUCCESS, userByUserId));
-};
-
-
-// TODO: After 로그인 인증 방법 (JWT)
-/**
- * API No. 4
  * API Name : 로그인 API
  * [POST] /app/login
  * body : email, passsword
@@ -96,7 +75,8 @@ exports.login = async function (req, res) {
 
     const {email, password} = req.body;
 
-    // TODO: email, password 형식적 Validation
+    if (!email) return res.send(errResponse(baseResponse.SIGNIN_EMAIL_EMPTY));
+    if (!password) return res.send(errResponse(baseResponse.SIGNIN_PASSWORD_EMPTY));
 
     const signInResponse = await userService.postSignIn(email, password);
 
@@ -105,7 +85,7 @@ exports.login = async function (req, res) {
 
 
 /**
- * API No. 5
+ * API No. 3
  * API Name : 회원 정보 수정 API + JWT + Validation
  * [PATCH] /app/users/:userId
  * path variable : userId

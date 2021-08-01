@@ -39,12 +39,10 @@ exports.emailCheck = async function (email) {
   return emailCheckResult;
 };
 
-exports.passwordCheck = async function (selectUserPasswordParams) {
+exports.passwordCheck = async function (selectUserPasswordParams, hashedPassword, email) {
   const connection = await pool.getConnection(async (conn) => conn);
-  const passwordCheckResult = await userDao.selectUserPassword(
-      connection,
-      selectUserPasswordParams
-  );
+  const passwordHashing = await userDao.hashedPassword(connection, hashedPassword, email);
+  const passwordCheckResult = await userDao.selectUserPassword(connection, selectUserPasswordParams);
   connection.release();
   return passwordCheckResult[0];
 };

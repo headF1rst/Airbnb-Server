@@ -13,7 +13,7 @@ const {connect} = require("http2");
 
 // Service: Create, Update, Delete 비즈니스 로직 처리
 
-exports.createUser = async function (email, password, nickname) {
+exports.createUser = async function (name, birth, email, password) {
     try {
         // 이메일 중복 확인
         const emailRows = await userProvider.emailCheck(email);
@@ -26,7 +26,7 @@ exports.createUser = async function (email, password, nickname) {
             .update(password)
             .digest("hex");
 
-        const insertUserInfoParams = [email, hashedPassword, nickname];
+        const insertUserInfoParams = [name, birth, email, hashedPassword];
 
         const connection = await pool.getConnection(async (conn) => conn);
 
@@ -42,8 +42,6 @@ exports.createUser = async function (email, password, nickname) {
     }
 };
 
-
-// TODO: After 로그인 인증 방법 (JWT)
 exports.postSignIn = async function (email, password) {
     try {
         // 이메일 여부 확인
@@ -57,9 +55,9 @@ exports.postSignIn = async function (email, password) {
             .createHash("sha512")
             .update(password)
             .digest("hex");
-
+        console.log(hashedPassword);
         const selectUserPasswordParams = [selectEmail, hashedPassword];
-        const passwordRows = await userProvider.passwordCheck(selectUserPasswordParams);
+        const passwordRows = await userProvider.passwordCheck(selectUserPasswordParams, hashedPassword, email);
 
         if (passwordRows[0].password !== hashedPassword) {
             return errResponse(baseResponse.SIGNIN_PASSWORD_WRONG);

@@ -31,7 +31,8 @@ module.exports = {
     USER_NICKNAME_EMPTY : { "isSuccess": false, "code": 2017, "message": "변경할 닉네임 값을 입력해주세요" },
 
     USER_STATUS_EMPTY : { "isSuccess": false, "code": 2018, "message": "회원 상태값을 입력해주세요" },
-
+    INVALID_AGE : { "isSuccess": false, "code": 2019, "message": "만 18세 이상의 성인만 회원으로 가입할 수 있습니다." },
+    DOB_FORMAT_ERR : { "isSuccess": false, "code": 2020, "message": "yyyy/mm/dd 형식으로 입력해주세요." },
     // Response error
     SIGNUP_REDUNDANT_EMAIL : { "isSuccess": false, "code": 3001, "message":"중복된 이메일입니다." },
     SIGNUP_REDUNDANT_NICKNAME : { "isSuccess": false, "code": 3002, "message":"중복된 닉네임입니다." },
