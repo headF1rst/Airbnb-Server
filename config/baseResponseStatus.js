@@ -13,7 +13,7 @@ module.exports = {
     SIGNUP_EMAIL_LENGTH : { "isSuccess": false, "code": 2002, "message":"이메일은 30자리 미만으로 입력해주세요." },
     SIGNUP_EMAIL_ERROR_TYPE : { "isSuccess": false, "code": 2003, "message":"이메일을 형식을 정확하게 입력해주세요." },
     SIGNUP_PASSWORD_EMPTY : { "isSuccess": false, "code": 2004, "message": "비밀번호를 입력 해주세요." },
-    SIGNUP_PASSWORD_LENGTH : { "isSuccess": false, "code": 2005, "message":"비밀번호는 6~20자리를 입력해주세요." },
+    SIGNUP_PASSWORD_LENGTH : { "isSuccess": false, "code": 2005, "message":"비밀번호는 8~20자리를 입력해주세요." },
     SIGNUP_NICKNAME_EMPTY : { "isSuccess": false, "code": 2006, "message":"닉네임을 입력 해주세요." },
     SIGNUP_NICKNAME_LENGTH : { "isSuccess": false,"code": 2007,"message":"닉네임은 최대 20자리를 입력해주세요." },
 
@@ -33,6 +33,10 @@ module.exports = {
     USER_STATUS_EMPTY : { "isSuccess": false, "code": 2018, "message": "회원 상태값을 입력해주세요" },
     INVALID_AGE : { "isSuccess": false, "code": 2019, "message": "만 18세 이상의 성인만 회원으로 가입할 수 있습니다." },
     DOB_FORMAT_ERR : { "isSuccess": false, "code": 2020, "message": "yyyy/mm/dd 형식으로 입력해주세요." },
+    SIGNUP_PASSWORD_NUMORCHAR : { "isSuccess": false, "code": 2021, "message": "숫자나 기호를 비밀번호에 포함해야 합니다." },
+    SIGNUP_NAME_EMPTY : { "isSuccess": false, "code": 2022, "message": "이름을 입력해주세요." },
+    SIGNUP_BIRTH_EMPTY : { "isSuccess": false, "code": 2023, "message": "생년월일을 입력해주세요." },
+    SINUP_PASSWORD_HAS_USERNAME : { "isSuccess": false, "code": 2024, "message": "비밀번호에 이름 또는 이메일이 포함되서는 안됩니다." },
     // Response error
     SIGNUP_REDUNDANT_EMAIL : { "isSuccess": false, "code": 3001, "message":"중복된 이메일입니다." },
     SIGNUP_REDUNDANT_NICKNAME : { "isSuccess": false, "code": 3002, "message":"중복된 닉네임입니다." },

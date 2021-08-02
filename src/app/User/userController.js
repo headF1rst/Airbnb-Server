@@ -30,8 +30,18 @@ exports.postUsers = async function (req, res) {
     // 비밀번호 비었는지 체크
     if (!password) return res.send(response(baseResponse.SIGNUP_PASSWORD_EMPTY));
 
-    // TODO 비밀번호 validation 처리 추가 (8자리 이상, 이름 및 메일주소 포함X, 숫자 or 기호 포함)
-    
+    // 비밀번호 8자리 이상 체크
+    if(password.length < 8) return res.send(response(baseResponse.SIGNUP_PASSWORD_LENGTH));
+
+    // 비밀번호 숫자 or 기호 포함
+    if((password.search((/(?=.*[!@#$%^&*])/)) < 0) && (password.search(/[0-9]/) < 0)) return res.send(response(baseResponse.SIGNUP_PASSWORD_NUMORCHAR));
+
+    // 비밀번호에 이름 및 메일주소 포함X
+    if(password.includes(name)) return res.send(response(baseResponse.SINUP_PASSWORD_HAS_USERNAME));
+
+    var part = email.split("@");
+    if(password.includes(part[0])) return res.send(response(baseResponse.SINUP_PASSWORD_HAS_USERNAME));
+    console.log(part[0]);
     // 이름 비었는지 체크
     if (!name) return res.send(response(baseResponse.SIGNUP_NAME_EMPTY));
     
