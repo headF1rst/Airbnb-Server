@@ -55,10 +55,11 @@ exports.postSignIn = async function (email, password) {
             .createHash("sha512")
             .update(password)
             .digest("hex");
-        console.log(hashedPassword);
         const selectUserPasswordParams = [selectEmail, hashedPassword];
-        const passwordRows = await userProvider.passwordCheck(selectUserPasswordParams, hashedPassword, email);
-
+        const passwordRows = await userProvider.passwordCheck(selectUserPasswordParams);
+        
+        //console.log(passwordRows[0].password);
+        //console.log(hashedPassword);
         if (passwordRows[0].password !== hashedPassword) {
             return errResponse(baseResponse.SIGNIN_PASSWORD_WRONG);
         }

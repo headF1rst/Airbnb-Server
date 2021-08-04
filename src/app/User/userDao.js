@@ -44,23 +44,12 @@ async function insertUserInfo(connection, insertUserInfoParams) {
   return insertUserInfoRow;
 }
 
-// DB 패스워드 암호화
-async function hashedPassword(connection, hashedPassword, email) {
-  const query = `
-        Update User
-        set password = ?
-        where email = ?
-    `;
-  const [passwordRows] = await connection.query(query, [hashedPassword, email]);
-  return passwordRows;
-}
-
 // 패스워드 체크
 async function selectUserPassword(connection, selectUserPasswordParams) {
   const selectUserPasswordQuery = `
         SELECT email, password
         FROM User
-        WHERE email = ? AND password = ?;`;
+        WHERE email = ?;`;
   const selectUserPasswordRow = await connection.query(
       selectUserPasswordQuery,
       selectUserPasswordParams
@@ -100,5 +89,4 @@ module.exports = {
   selectUserPassword,
   selectUserAccount,
   updateUserInfo,
-  hashedPassword
 };
