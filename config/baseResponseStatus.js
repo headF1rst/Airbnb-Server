@@ -37,6 +37,8 @@ module.exports = {
     SIGNUP_NAME_EMPTY : { "isSuccess": false, "code": 2022, "message": "이름을 입력해주세요." },
     SIGNUP_BIRTH_EMPTY : { "isSuccess": false, "code": 2023, "message": "생년월일을 입력해주세요." },
     SINUP_PASSWORD_HAS_USERNAME : { "isSuccess": false, "code": 2024, "message": "비밀번호에 이름 또는 이메일이 포함되서는 안됩니다." },
+    SEARCH_ADDRESS_EMPTY : { "isSuccess": false, "code": 2025, "message": "어디로 여행가세요?" },
+    
     // Response error
     SIGNUP_REDUNDANT_EMAIL : { "isSuccess": false, "code": 3001, "message":"중복된 이메일입니다." },
     SIGNUP_REDUNDANT_NICKNAME : { "isSuccess": false, "code": 3002, "message":"중복된 닉네임입니다." },

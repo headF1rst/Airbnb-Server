@@ -105,7 +105,7 @@ exports.patchUsers = async function (req, res) {
 
     // jwt - userId, path variable :userId
 
-    const userIdFromJWT = req.verifiedToken.userId
+    const userIdFromJWT = req.verifiedToken.userId;
 
     const userId = req.params.userId;
     const nickname = req.body.nickname;
