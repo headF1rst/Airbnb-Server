@@ -74,11 +74,10 @@ exports.postSignIn = async function (email, password) {
         }
 
         console.log(userInfoRows[0].name); // DB의 유저 이름
-
         //토큰 생성 Service
         let token = await jwt.sign(
             {
-                userId: userInfoRows[0].id,
+                userId: userInfoRows[0].userId,
             }, // 토큰의 내용(payload)
             secret_config.jwtsecret, // 비밀키
             {

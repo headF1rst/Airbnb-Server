@@ -69,10 +69,37 @@ const {emit} = require("nodemon");
     const addressForSearch = '%' + address + '%';
     const checkInForSearch = checkIn + '%';
     const checkOutForSearch = checkOut + '%';
-    const params = [addressForSearch, guestNum, checkInForSearch, checkInForSearch, checkOutForSearch, checkOutForSearch, checkInForSearch, checkOutForSearch];
+    const params = [guestNum, addressForSearch, guestNum, checkInForSearch, checkInForSearch, checkOutForSearch, checkOutForSearch, checkInForSearch, checkOutForSearch];
 
     if(!checkIn && !checkOut) searchResponse = await stayProvider.findStayWithoutDate(addressForSearch, guestNum);
     else searchResponse = await stayProvider.findStay(params);
 
     return res.send(response(baseResponse.SUCCESS, searchResponse));
 };
+
+/**
+ * API No. 5
+ * API Name : 숙소 가격대별 검색 API
+ * [GET] /search/prices
+ * path variable : userId
+ * body : nickname
+ */
+ exports.searchStayByPrice = async function (req, res) {
+
+    // jwt - userId, path variable :userId
+
+    const userIdFromJWT = req.verifiedToken.userId;
+
+    const userId = req.params.userId;
+    const nickname = req.body.nickname;
+
+    if (userIdFromJWT != userId) {
+        res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    } else {
+        if (!nickname) return res.send(errResponse(baseResponse.USER_NICKNAME_EMPTY));
+
+        const editUserInfo = await userService.editUser(userId, nickname)
+        return res.send(editUserInfo);
+    }
+};
+

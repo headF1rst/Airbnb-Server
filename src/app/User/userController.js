@@ -9,7 +9,7 @@ const {emit} = require("nodemon");
 /**
  * API No. 1
  * API Name : 유저 생성 (회원가입) API
- * [POST] /app/signin
+ * [POST] /users
  */
 exports.postUsers = async function (req, res) {
 
@@ -78,7 +78,7 @@ exports.postUsers = async function (req, res) {
 /**
  * API No. 2
  * API Name : 로그인 API
- * [POST] /app/login
+ * [POST] /login
  * body : email, passsword
  */
 exports.login = async function (req, res) {
@@ -97,7 +97,7 @@ exports.login = async function (req, res) {
 /**
  * API No. 3
  * API Name : 회원 정보 수정 API + JWT + Validation
- * [PATCH] /app/users/:userId
+ * [PATCH] /users/:userId
  * path variable : userId
  * body : nickname
  */
@@ -120,21 +120,21 @@ exports.patchUsers = async function (req, res) {
     }
 };
 
-
-
-
-
-
-
-
-
-
-
-/** JWT 토큰 검증 API
- * [GET] /app/auto-login
+/**
+ * API No. 24
+ * API Name : JWT 검증 API
+ * [GET] /users-auth/:userId
+ * path variable : userId
  */
-exports.check = async function (req, res) {
-    const userIdResult = req.verifiedToken.userId;
-    console.log(userIdResult);
+ exports.checkJWT = async function (req, res) {
+    // jwt - userId
+    const userIdFromJWT = req.verifiedToken.userId;
+    const userId = req.params.userId;
+
+    if (userIdFromJWT != userId) return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    //console.log(userIdFromJWT);
+    //console.log(userId);
     return res.send(response(baseResponse.TOKEN_VERIFICATION_SUCCESS));
 };
+
+

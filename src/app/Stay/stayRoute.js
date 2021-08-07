@@ -5,4 +5,7 @@ module.exports = function(app){
     // 3. 숙소 검색 API
     app.get('/search', stay.searchStay);
 
+    // 5. 숙소 가격대별 검색 API
+    app.get('/search/prices', stay.searchStayByPrice);
+
 };

@@ -2,7 +2,7 @@
 async function selectStayWithoutDate(connection, address, guestNum) 
 {
     const query = `
-    select Stay.stayId, superHost, stayName, address, imageURL, maxGuests, bedRoomCount, bedCount, showerRoomCount, avgRate, cntRate
+    select Stay.stayId, superHost, stayName, address, imageURL, maxGuests, bedRoomCount, bedCount, showerRoomCount, avgRate, cntRate, latitude, longitude
        from Stay left join(select round(avg((accurateRate+cleanRate+communicateRate+rocationRate+satisfiedRate+checkInRate)/6), 1) as 'avgRate',
                                   count(*) as cntRate, stayId
                                   from Review
@@ -21,7 +21,8 @@ async function selectStayWithoutDate(connection, address, guestNum)
 async function selectStay(connection, params) 
 {
     const query = `
-    select Stay.stayId, superHost, stayName, address, imageURL, maxGuests, bedRoomCount, bedCount, showerRoomCount, avgRate, cntRate, price
+    select Stay.stayId, superHost, stayName, address, imageURL, maxGuests, bedRoomCount, 
+    bedCount, showerRoomCount, avgRate, cntRate, concat('$', price * ?) as price, latitude, longitude
        from Stay left join(select round(avg((accurateRate+cleanRate+communicateRate+rocationRate+satisfiedRate+checkInRate)/6), 1) as 'avgRate',
                                   count(*) as cntRate, stayId
                                   from Review

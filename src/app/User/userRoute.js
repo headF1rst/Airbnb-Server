@@ -11,6 +11,6 @@ module.exports = function(app){
     // 회원 정보 수정 API (JWT 검증 및 Validation - 메소드 체이닝 방식으로 jwtMiddleware 사용)
     app.patch('/users/:userId', jwtMiddleware, user.patchUsers)
 
-
-
+    // 24. JWT 검증 API
+    app.get('/users-auth/:userId', jwtMiddleware, user.checkJWT);
 };
