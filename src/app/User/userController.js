@@ -95,29 +95,20 @@ exports.login = async function (req, res) {
 
 
 /**
- * API No. 3
- * API Name : 회원 정보 수정 API + JWT + Validation
- * [PATCH] /users/:userId
- * path variable : userId
- * body : nickname
+ * API No. 15
+ * API Name : 회원 정보 이름수정 API
+ * [PATCH] /users/name
+ * body : name
  */
-exports.patchUsers = async function (req, res) {
-
-    // jwt - userId, path variable :userId
+exports.patchUsersName = async function (req, res) {
 
     const userIdFromJWT = req.verifiedToken.userId;
+    const name = req.body.name;
 
-    const userId = req.params.userId;
-    const nickname = req.body.nickname;
+    if (!name) return res.send(errResponse(baseResponse.USER_NAME_EMPTY));
 
-    if (userIdFromJWT != userId) {
-        res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
-    } else {
-        if (!nickname) return res.send(errResponse(baseResponse.USER_NICKNAME_EMPTY));
-
-        const editUserInfo = await userService.editUser(userId, nickname)
-        return res.send(editUserInfo);
-    }
+    const editUserInfo = await userService.editUser(name, userIdFromJWT);
+    return res.send(editUserInfo);
 };
 
 /**
@@ -134,7 +125,67 @@ exports.patchUsers = async function (req, res) {
     if (userIdFromJWT != userId) return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
     //console.log(userIdFromJWT);
     //console.log(userId);
+    
     return res.send(response(baseResponse.TOKEN_VERIFICATION_SUCCESS));
 };
 
+/**
+ * API No. 27
+ * API Name : 페이스북 로그인 API
+ * [GET] /login/facebook
+ */
+ exports.loginFacebook = async function (req, res) {
+    const { accessToken } = req.body;
+    try {
+        let facebook_profile;
+        try {
+            facebook_profile = await axios.get('https://kapi.kakao.com/v2/user/me', {
+                headers: {
+                    Authorization: 'Bearer ' + accessToken,
+                    'Content-Type': 'application/json',
+                },
+            });
+        } catch (err) {
+            logger.error(`Can't get kakao profile\n: ${JSON.stringify(err)}`);
+            return res.send(errResponse(baseResponse.USER_COMMENT_EMPTY));
+        }
+
+        const email = kakao_profile.data.kakao_account.profile.nickname;
+        const Id = kakao_profile.data.kakao_account.email;
+        const IdRows = await userProvider.IdCheck(Id);
+        // 이미 존재하는 이메일인 경우 = 회원가입 되어 있는 경우 -> 로그인 처리
+        if (IdRows.length > 0) {
+            const userInfoRows = await userProvider.accountCheck(Id);
+            const token = await jwt.sign(
+                {
+                    userId: userInfoRows[0].userId,
+                },
+                secret_config.jwtsecret,
+                {
+                    expiresIn: '365d',
+                    subject: 'userId',
+                },
+            );
+
+            const result = { jwt: token, userId: userInfoRows[0].userId };
+            return res.send(response(baseResponse.SUCCESS, result));
+            // 그렇지 않은 경우 -> 회원가입 처리
+        } else {
+            const result = {
+                Id: Id,
+                email: email,
+                loginStatus: 'K',
+            };
+            const signUpResponse = await userService.createSocialUser(
+                Id,
+                email,
+                result.loginStatus,
+            );
+            return res.send(response(baseResponse.SUCCESS, result));
+        }
+    } catch (err) {
+        logger.error(`App - logInKakao Query error\n: ${JSON.stringify(err)}`);
+        return res.send(errResponse(baseResponse.USER_CONTENTS_EMPTY));
+    }
+};
 

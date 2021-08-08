@@ -69,6 +69,7 @@ const {emit} = require("nodemon");
     const addressForSearch = '%' + address + '%';
     const checkInForSearch = checkIn + '%';
     const checkOutForSearch = checkOut + '%';
+    
     const params = [guestNum, addressForSearch, guestNum, checkInForSearch, checkInForSearch, checkOutForSearch, checkOutForSearch, checkInForSearch, checkOutForSearch];
 
     if(!checkIn && !checkOut) searchResponse = await stayProvider.findStayWithoutDate(addressForSearch, guestNum);

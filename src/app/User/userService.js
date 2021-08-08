@@ -94,15 +94,13 @@ exports.postSignIn = async function (email, password) {
     }
 };
 
-exports.editUser = async function (id, nickname) {
+exports.editUser = async function (name, userIdFromJWT) {
     try {
-        console.log(id)
         const connection = await pool.getConnection(async (conn) => conn);
-        const editUserResult = await userDao.updateUserInfo(connection, id, nickname)
+        const editUserResult = await userDao.updateUserInfo(connection, name, userIdFromJWT)
         connection.release();
 
         return response(baseResponse.SUCCESS);
-
     } catch (err) {
         logger.error(`App - editUser Service error\n: ${err.message}`);
         return errResponse(baseResponse.DB_ERROR);
