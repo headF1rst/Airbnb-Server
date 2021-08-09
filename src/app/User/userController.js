@@ -6,6 +6,12 @@ const {response, errResponse} = require("../../../config/response");
 const regexEmail = require("regex-email");
 const {emit} = require("nodemon");
 
+// 생년월일 yyyy/mm/dd, over 18 validation check
+const regexBirth = /^([0-9]{4}[-/]?((0[13-9]|1[012])[-/]?(0[1-9]|[12][0-9]|30)|(0[13578]|1[02])[-/]?31|02[-/]?(0[1-9]|1[0-9]|2[0-8]))|([0-9]{2}(([2468][048]|[02468][48])|[13579][26])|([13579][26]|[02468][048]|0[0-9]|1[0-6])00)[-/]?02[-/]?29)$/;
+
+// 핸드폰 번호 000-0000-0000 validation check
+const regexPhoneNum = /^\(?([0-9]{3})\)?[-. ]?([0-9]{4})[-. ]?([0-9]{4})$/;
+
 /**
  * API No. 1
  * API Name : 유저 생성 (회원가입) API
@@ -47,9 +53,6 @@ exports.postUsers = async function (req, res) {
     
     // 생년월일 비었는지 체크
     if(!birth) return res.send(response(baseResponse.SIGNUP_BIRTH_EMPTY));
-
-    // 생년월일 yyyy/mm/dd, over 18 validation check
-    var regexBirth = /^([0-9]{4}[-/]?((0[13-9]|1[012])[-/]?(0[1-9]|[12][0-9]|30)|(0[13578]|1[02])[-/]?31|02[-/]?(0[1-9]|1[0-9]|2[0-8]))|([0-9]{2}(([2468][048]|[02468][48])|[13579][26])|([13579][26]|[02468][048]|0[0-9]|1[0-6])00)[-/]?02[-/]?29)$/;
 
     if(regexBirth.test(birth))
     {
@@ -112,6 +115,97 @@ exports.patchUsersName = async function (req, res) {
 };
 
 /**
+ * API No. 16
+ * API Name : 회원 성별수정 API
+ * [PATCH] /users/sex
+ * body : sex
+ */
+ exports.patchUserSex = async function (req, res) {
+
+    const userIdFromJWT = req.verifiedToken.userId;
+    const sex = req.body.sex;
+
+    if (!sex) return res.send(errResponse(baseResponse.USER_SEX_EMPTY));
+
+    const editUserInfo = await userService.editUserSex(sex, userIdFromJWT);
+    return res.send(editUserInfo);
+};
+
+/**
+ * API No. 17
+ * API Name : 회원 생년월일수정 API
+ * [PATCH] /users/birth
+ * body : birth
+ */
+ exports.patchUserBirth = async function (req, res) {
+
+    const userIdFromJWT = req.verifiedToken.userId;
+    const birth = req.body.birth;
+
+    if(!birth) return res.send(response(baseResponse.SIGNUP_BIRTH_EMPTY));
+
+    if(regexBirth.test(birth))
+    {
+        var parts = birth.split("/");
+        var dtDOB = new Date(parts[1] + "/" + parts[2] + "/" + parts[0]);
+        var dtCurrent = new Date();
+        if(dtCurrent.getFullYear() - dtDOB.getFullYear() < 18) return res.send(response(baseResponse.INVALID_AGE_EDIT));
+        if(dtCurrent.getFullYear() - dtDOB.getFullYear() == 18)
+        {
+            if(dtCurrent.getMonth() < dtDOB.getMonth()) return res.send(response(baseResponse.INVALID_AGE_EDIT));
+            if(dtCurrent.getMonth() == dtDOB.getMonth())
+            {
+                if(dtCurrent.getDate() < dtDOB.getDate()) return res.send(response(baseResponse.INVALID_AGE_EDIT));
+            }
+        }
+    }
+    if(!regexBirth.test(birth))
+    {
+        return res.send(response(baseResponse.DOB_FORMAT_ERR));
+    }
+
+    const editUserInfo = await userService.editUserBirth(birth, userIdFromJWT);
+    return res.send(editUserInfo);
+};
+
+/**
+ * API No. 18
+ * API Name : 회원 이메일수정 API
+ * [PATCH] /users/email
+ * body : email
+ */
+ exports.patchUserEmail = async function (req, res) {
+
+    const userIdFromJWT = req.verifiedToken.userId;
+    const email = req.body.email;
+
+    if (!email) return res.send(errResponse(baseResponse.SIGNIN_EMAIL_EMPTY));
+    if (!regexEmail.test(email)) return res.send(response(baseResponse.SIGNUP_EMAIL_ERROR_TYPE));
+
+    const editUserInfo = await userService.editUserEmail(email, userIdFromJWT);
+    return res.send(editUserInfo);
+};
+
+/**
+ * API No. 19
+ * API Name : 회원 핸드폰 번호수정 API
+ * [PATCH] /users/phone-num/:phoneId
+ * body : phoneNum
+ */
+ exports.patchUserPhone = async function (req, res) {
+
+    const userIdFromJWT = req.verifiedToken.userId;
+    const phoneNum = req.body.phoneNum;
+    const phoneId = req.params.phoneId;
+
+    if (!phoneNum) return res.send(errResponse(baseResponse.PHONE_NUMBER_EMPTY));
+    if (!regexPhoneNum.test(phoneNum)) return res.send(response(baseResponse.INVALID_PHONENUM));
+
+    const editUserInfo = await userService.editUserPhone(phoneNum, userIdFromJWT, phoneId);
+    return res.send(editUserInfo);
+};
+
+/**
  * API No. 24
  * API Name : JWT 검증 API
  * [GET] /users-auth/:userId
@@ -125,8 +219,8 @@ exports.patchUsersName = async function (req, res) {
     if (userIdFromJWT != userId) return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
     //console.log(userIdFromJWT);
     //console.log(userId);
-    
-    return res.send(response(baseResponse.TOKEN_VERIFICATION_SUCCESS));
+    const checkUser = await userProvider.jwtCheck(userId);
+    return res.send(response(baseResponse.SUCCESS, checkUser));
 };
 
 /**

@@ -106,3 +106,55 @@ exports.editUser = async function (name, userIdFromJWT) {
         return errResponse(baseResponse.DB_ERROR);
     }
 }
+
+exports.editUserSex = async function (sex, userIdFromJWT) {
+    try {
+        const connection = await pool.getConnection(async (conn) => conn);
+        const editUserResult = await userDao.updateUserSex(connection, sex, userIdFromJWT)
+        connection.release();
+
+        return response(baseResponse.SUCCESS);
+    } catch (err) {
+        logger.error(`App - editUser Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
+exports.editUserBirth = async function (birth, userIdFromJWT) {
+    try {
+        const connection = await pool.getConnection(async (conn) => conn);
+        const editUserResult = await userDao.updateUserBirth(connection, birth, userIdFromJWT)
+        connection.release();
+
+        return response(baseResponse.SUCCESS);
+    } catch (err) {
+        logger.error(`App - editUser Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
+exports.editUserEmail = async function (email, userIdFromJWT) {
+    try {
+        const connection = await pool.getConnection(async (conn) => conn);
+        const editUserResult = await userDao.updateUserEmail(connection, email, userIdFromJWT)
+        connection.release();
+
+        return response(baseResponse.SUCCESS);
+    } catch (err) {
+        logger.error(`App - editUser Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
+exports.editUserPhone = async function (phone, userIdFromJWT, phoneId) {
+    try {
+        const connection = await pool.getConnection(async (conn) => conn);
+        const editUserResult = await userDao.updateUserPhone(connection, phone, userIdFromJWT, phoneId);
+        connection.release();
+
+        return response(baseResponse.SUCCESS);
+    } catch (err) {
+        logger.error(`App - editUser Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}

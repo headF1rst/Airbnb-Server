@@ -67,7 +67,19 @@ module.exports = function(app){
     app.post('/login', user.login);
 
     // 15. 회원 이름수정 API 
-    app.patch('/users/name', jwtMiddleware, user.patchUsersName)
+    app.patch('/users/name', jwtMiddleware, user.patchUsersName);
+
+    // 16. 회원 성별수정 API
+    app.patch('/users/sex', jwtMiddleware, user.patchUserSex);
+
+    // 17. 회원 생년월일수정 API
+    app.patch('/users/birth', jwtMiddleware, user.patchUserBirth);
+
+    // 18. 회원 이메일수정 API
+    app.patch('/users/email', jwtMiddleware, user.patchUserEmail);
+
+    // 19. 회원 핸드폰 번호수정 API
+    app.patch('/users/phone-num/:phoneId', jwtMiddleware, user.patchUserPhone);
 
     // 24. JWT 검증 API
     app.get('/users-auth/:userId', jwtMiddleware, user.checkJWT);

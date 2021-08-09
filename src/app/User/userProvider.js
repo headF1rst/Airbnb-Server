@@ -52,3 +52,10 @@ exports.accountCheck = async function (email) {
   connection.release();
   return userAccountResult;
 };
+
+exports.jwtCheck = async function (userId) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const userAccountResult = await userDao.jwtUserCheck(connection, userId);
+  connection.release();
+  return userAccountResult;
+};

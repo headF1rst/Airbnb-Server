@@ -80,6 +80,52 @@ async function updateUserInfo(connection, name, userIdFromJWT) {
   return updateUserRow[0];
 }
 
+async function updateUserSex(connection, sex, userIdFromJWT) {
+  const updateUserQuery = `
+  UPDATE User
+  SET sex = ?
+  WHERE userId = ?;`;
+  const updateUserRow = await connection.query(updateUserQuery, [sex, userIdFromJWT]);
+  return updateUserRow[0];
+}
+
+async function updateUserBirth(connection, birth, userIdFromJWT) {
+  const updateUserQuery = `
+  UPDATE User
+  SET birth = ?
+  WHERE userId = ?;`;
+  const updateUserRow = await connection.query(updateUserQuery, [birth, userIdFromJWT]);
+  return updateUserRow[0];
+}
+
+async function updateUserEmail(connection, email, userIdFromJWT) {
+  const updateUserQuery = `
+  UPDATE User
+  SET email = ?
+  WHERE userId = ?;`;
+  const updateUserRow = await connection.query(updateUserQuery, [email, userIdFromJWT]);
+  return updateUserRow[0];
+}
+
+async function updateUserPhone(connection, phone, userIdFromJWT, phoneId) {
+  const updateUserQuery = `
+  UPDATE PhoneNumber
+  SET phoneNum = ?
+  WHERE userId = ? and phoneId = ?;`;
+  const updateUserRow = await connection.query(updateUserQuery, [phone, userIdFromJWT, phoneId]);
+  return updateUserRow[0];
+}
+
+async function jwtUserCheck(connection, userId) {
+  const updateUserQuery = `
+  select name, userId
+  from User
+  where userId = ?;
+  `;
+  const UserRow = await connection.query(updateUserQuery, userId);
+  return UserRow[0];
+}
+
 
 module.exports = {
   selectUser,
@@ -89,4 +135,9 @@ module.exports = {
   selectUserPassword,
   selectUserAccount,
   updateUserInfo,
+  updateUserSex,
+  updateUserBirth,
+  updateUserEmail,
+  updateUserPhone,
+  jwtUserCheck,
 };

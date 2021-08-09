@@ -11,7 +11,7 @@ module.exports = {
     //Request error
     SIGNUP_EMAIL_EMPTY : { "isSuccess": false, "code": 2001, "message":"이메일을 입력해주세요" },
     SIGNUP_EMAIL_LENGTH : { "isSuccess": false, "code": 2002, "message":"이메일은 30자리 미만으로 입력해주세요." },
-    SIGNUP_EMAIL_ERROR_TYPE : { "isSuccess": false, "code": 2003, "message":"이메일을 형식을 정확하게 입력해주세요." },
+    SIGNUP_EMAIL_ERROR_TYPE : { "isSuccess": false, "code": 2003, "message":"이메일 형식을 정확하게 입력해주세요." },
     SIGNUP_PASSWORD_EMPTY : { "isSuccess": false, "code": 2004, "message": "비밀번호를 입력 해주세요." },
     SIGNUP_PASSWORD_LENGTH : { "isSuccess": false, "code": 2005, "message":"비밀번호는 8~20자리를 입력해주세요." },
     SIGNUP_NICKNAME_EMPTY : { "isSuccess": false, "code": 2006, "message":"닉네임을 입력 해주세요." },
@@ -38,7 +38,10 @@ module.exports = {
     SIGNUP_BIRTH_EMPTY : { "isSuccess": false, "code": 2023, "message": "생년월일을 입력해주세요." },
     SINUP_PASSWORD_HAS_USERNAME : { "isSuccess": false, "code": 2024, "message": "비밀번호에 이름 또는 이메일이 포함되서는 안됩니다." },
     SEARCH_ADDRESS_EMPTY : { "isSuccess": false, "code": 2025, "message": "어디로 여행가세요?" },
-    
+    USER_SEX_EMPTY : { "isSuccess": false, "code": 2026, "message": "성별을 지정해 주세요. (남자,여자,기타)"},
+    INVALID_AGE_EDIT : { "isSuccess": false, "code": 2027, "message": "에어비앤비를 이용하려면 만 18세 이상이어야 합니다. 올바른 생년월일을 다시 입력해주세요."},
+    PHONE_NUMBER_EMPTY : { "isSuccess": false, "code": 2028, "message": "전화번호를 입력해 주세요"},
+    INVALID_PHONENUM : { "isSuccess": false, "code": 2029, "message": "올바른 형식의 전화번호를 입력해 주세요."},
     // Response error
     SIGNUP_REDUNDANT_EMAIL : { "isSuccess": false, "code": 3001, "message":"중복된 이메일입니다." },
     SIGNUP_REDUNDANT_NICKNAME : { "isSuccess": false, "code": 3002, "message":"중복된 닉네임입니다." },
