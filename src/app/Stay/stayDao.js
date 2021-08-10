@@ -1,8 +1,8 @@
 // 숙소 조회 (체크인, 아웃 날짜 입력 없는경우)
-async function selectStayWithoutDate(connection, address, guestNum) 
+async function selectStayWithoutDate(connection, params2) 
 {
     const query = `
-    select Stay.stayId, superHost, stayName, address, imageURL, maxGuests, bedRoomCount, bedCount, showerRoomCount, avgRate, cntRate, latitude, longitude
+    select Stay.stayId, superHost, stayName, address, imageURL, maxGuests, bedRoomCount, bedCount, showerRoomCount, cancelPos, stayType, avgRate, cntRate, latitude, longitude
        from Stay left join(select round(avg((accurateRate+cleanRate+communicateRate+rocationRate+satisfiedRate+checkInRate)/6), 1) as 'avgRate',
                                   count(*) as cntRate, stayId
                                   from Review
@@ -11,18 +11,20 @@ async function selectStayWithoutDate(connection, address, guestNum)
                     from User) as U on U.userId = Stay.userId
        left join (select stayId, imageURL
                     from StayImage) as SI on SI.stayId = Stay.stayId
-       where Stay.status = 'Active' and address  LIKE ? and maxGuests >= ?;
+       where Stay.status = 'Active' and address  LIKE ? and maxGuests >= ? and cancelPos like ? and superHost like ? and (price between ? and ?) and stayType like ?
+         and  bedCount >= ? and bedRoomCount >= ? and showerRoomCount >= ? and petOk like ? and smokingOk like ?;
           `;
-    const [selectRoomsRows] = await connection.query(query, [address, guestNum]);
+    const [selectRoomsRows] = await connection.query(query, params2);
     return selectRoomsRows;
 }
 
 // 숙소 조회 
 async function selectStay(connection, params) 
-{
+{   
+    console.log(params);
     const query = `
-    select Stay.stayId, superHost, stayName, address, imageURL, maxGuests, bedRoomCount, 
-    bedCount, showerRoomCount, avgRate, cntRate, concat('$', price * ?) as price, latitude, longitude
+    select Stay.stayId, superHost, stayName, address, imageURL, maxGuests, bedRoomCount, bedCount, showerRoomCount, cancelPos, stayType,
+       avgRate, cntRate, concat('$', price * ?) as totalPrice, latitude, longitude
        from Stay left join(select round(avg((accurateRate+cleanRate+communicateRate+rocationRate+satisfiedRate+checkInRate)/6), 1) as 'avgRate',
                                   count(*) as cntRate, stayId
                                   from Review
@@ -31,7 +33,9 @@ async function selectStay(connection, params)
                     from User) as U on U.userId = Stay.userId
        left join (select stayId, imageURL
                     from StayImage) as SI on SI.stayId = Stay.stayId
-       where Stay.status = 'Active' and address  LIKE ? and maxGuests >= ? and Stay.stayId not in(
+       where Stay.status = 'Active' and address  LIKE ? and maxGuests >= ? and cancelPos like ? and superHost like ? and (price between ? and ?) and stayType like ?
+         and  bedCount >= ? and bedRoomCount >= ? and showerRoomCount >= ? and petOk like ? and smokingOk like ?
+         and Stay.stayId not in(
             select BS.stayId
             from Booking BK join BookedStay BS
                 on BK.bookId = BS.bookId

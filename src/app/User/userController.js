@@ -206,6 +206,19 @@ exports.patchUsersName = async function (req, res) {
 };
 
 /**
+ * API No. 20
+ * API Name : 회원 탈퇴 API
+ * [PATCH] /users/status
+ */
+ exports.patchUserStatus = async function (req, res) {
+
+    const userIdFromJWT = req.verifiedToken.userId;
+
+    const editUserInfo = await userService.editUserStatus(userIdFromJWT);
+    return res.send(editUserInfo);
+};
+
+/**
  * API No. 24
  * API Name : JWT 검증 API
  * [GET] /users-auth/:userId

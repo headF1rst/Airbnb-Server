@@ -81,6 +81,9 @@ module.exports = function(app){
     // 19. 회원 핸드폰 번호수정 API
     app.patch('/users/phone-num/:phoneId', jwtMiddleware, user.patchUserPhone);
 
+    // 20. 회원 탈퇴 API
+    app.patch('/users/status', jwtMiddleware, user.patchUserStatus);
+
     // 24. JWT 검증 API
     app.get('/users-auth/:userId', jwtMiddleware, user.checkJWT);
 };

@@ -158,3 +158,16 @@ exports.editUserPhone = async function (phone, userIdFromJWT, phoneId) {
         return errResponse(baseResponse.DB_ERROR);
     }
 }
+
+exports.editUserStatus = async function (userIdFromJWT) {
+    try {
+        const connection = await pool.getConnection(async (conn) => conn);
+        const editUserResult = await userDao.updateUserStatus(connection,userIdFromJWT);
+        connection.release();
+
+        return response(baseResponse.SUCCESS);
+    } catch (err) {
+        logger.error(`App - editUser Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}

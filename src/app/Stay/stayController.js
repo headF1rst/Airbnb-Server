@@ -56,51 +56,38 @@ const {emit} = require("nodemon");
 
  exports.searchStay = async function (req, res) {
 
-    var { address, checkIn, checkOut, guestNum } = req.query;
+    var { address, checkIn, checkOut, guestNum, cancelPos, superHost, minPrice, maxPrice, category, bedCount, bedRoomCount, showerCount, petOk, smokingOk} = req.query;
 
     if (!address) return res.send(errResponse(baseResponse.SEARCH_ADDRESS_EMPTY));
 
+    if(!minPrice) minPrice = 0;
+    if(!maxPrice) maxPrice = 9999;
+    if(!bedCount) bedCount = 0;
+    if(!bedRoomCount) bedRoomCount = 0;
+    if(!showerCount) showerCount = 0;
+    if (!guestNum) guestNum = 1;
+
     if (!checkIn && checkOut) checkIn = decr_date(checkOut);
     else if (checkIn && !checkOut) checkOut = incr_date(checkIn);
-    
-    if (!guestNum) guestNum = 0;
 
     var searchResponse;
     const addressForSearch = '%' + address + '%';
     const checkInForSearch = checkIn + '%';
     const checkOutForSearch = checkOut + '%';
-    
-    const params = [guestNum, addressForSearch, guestNum, checkInForSearch, checkInForSearch, checkOutForSearch, checkOutForSearch, checkInForSearch, checkOutForSearch];
+    const categoryForSearch = '%' + category + '%';
+    const cancelPosFS = '%' + cancelPos + '%';
+    const superHostFS= '%' + superHost + '%';
+    const petOkFS = '%' + petOk + '%';
+    const smokingOkFS = '%' + smokingOk + '%';
 
-    if(!checkIn && !checkOut) searchResponse = await stayProvider.findStayWithoutDate(addressForSearch, guestNum);
+    const params = [guestNum, addressForSearch, guestNum, cancelPosFS, superHostFS, minPrice, maxPrice, categoryForSearch, bedCount, bedRoomCount, showerCount, petOkFS, smokingOkFS,
+      checkInForSearch, checkInForSearch, checkOutForSearch, checkOutForSearch, checkInForSearch, checkOutForSearch];
+    
+    const params2 = [addressForSearch, guestNum, cancelPosFS, superHostFS, minPrice, maxPrice, categoryForSearch, bedCount, bedRoomCount, showerCount, petOkFS, smokingOkFS];
+
+    if(!checkIn && !checkOut) searchResponse = await stayProvider.findStayWithoutDate(params2);
     else searchResponse = await stayProvider.findStay(params);
 
     return res.send(response(baseResponse.SUCCESS, searchResponse));
-};
-
-/**
- * API No. 5
- * API Name : 숙소 가격대별 검색 API
- * [GET] /search/prices
- * path variable : userId
- * body : nickname
- */
- exports.searchStayByPrice = async function (req, res) {
-
-    // jwt - userId, path variable :userId
-
-    const userIdFromJWT = req.verifiedToken.userId;
-
-    const userId = req.params.userId;
-    const nickname = req.body.nickname;
-
-    if (userIdFromJWT != userId) {
-        res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
-    } else {
-        if (!nickname) return res.send(errResponse(baseResponse.USER_NICKNAME_EMPTY));
-
-        const editUserInfo = await userService.editUser(userId, nickname)
-        return res.send(editUserInfo);
-    }
 };
 
