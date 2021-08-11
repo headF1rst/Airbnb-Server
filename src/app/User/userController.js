@@ -206,6 +206,22 @@ exports.patchUsersName = async function (req, res) {
 };
 
 /**
+ * API No. 19
+ * API Name : 리뷰 등록 API
+ * [PATCH] /reviews/:stayId
+ * body : phoneNum
+ */
+ exports.postReview = async function (req, res) {
+
+    const userIdFromJWT = req.verifiedToken.userId;
+    const { } = req.body;
+    const stayId = req.params.stayId;
+
+    const editUserInfo = await userService.editUserPhone(phoneNum, userIdFromJWT, phoneId);
+    return res.send(editUserInfo);
+};
+
+/**
  * API No. 20
  * API Name : 회원 탈퇴 API
  * [PATCH] /users/status
@@ -237,7 +253,7 @@ exports.patchUsersName = async function (req, res) {
 };
 
 /**
- * API No. 27
+ * API No. 25
  * API Name : 페이스북 로그인 API
  * [GET] /login/facebook
  */
@@ -296,3 +312,16 @@ exports.patchUsersName = async function (req, res) {
     }
 };
 
+/**
+ * API No. 27
+ * API Name : 회원 전화번호 삭제 API
+ * [PATCH] /users/phone-num/:phoneId/status
+ */
+ exports.patchPhoneStatus = async function (req, res) {
+
+    const userIdFromJWT = req.verifiedToken.userId;
+    const phoneId = req.params.phoneId;
+
+    const editUserInfo = await userService.editPhoneStatus(userIdFromJWT, phoneId);
+    return res.send(editUserInfo);
+};

@@ -42,6 +42,7 @@ module.exports = {
     INVALID_AGE_EDIT : { "isSuccess": false, "code": 2027, "message": "에어비앤비를 이용하려면 만 18세 이상이어야 합니다. 올바른 생년월일을 다시 입력해주세요."},
     PHONE_NUMBER_EMPTY : { "isSuccess": false, "code": 2028, "message": "전화번호를 입력해 주세요"},
     INVALID_PHONENUM : { "isSuccess": false, "code": 2029, "message": "올바른 형식의 전화번호를 입력해 주세요."},
+    CANCEL_BOOKING_IMP : { "isSuccess": false, "code": 2030, "message": "당일 예약 취소는 불가능 합니다."},
     // Response error
     SIGNUP_REDUNDANT_EMAIL : { "isSuccess": false, "code": 3001, "message":"중복된 이메일입니다." },
     SIGNUP_REDUNDANT_NICKNAME : { "isSuccess": false, "code": 3002, "message":"중복된 닉네임입니다." },

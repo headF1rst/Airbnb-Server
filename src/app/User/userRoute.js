@@ -66,24 +66,30 @@ module.exports = function(app){
     // 2. 로그인 하기 API 
     app.post('/login', user.login);
 
-    // 15. 회원 이름수정 API 
+    // 4. JWT 검증 API
+    app.get('/users-auth/:userId', jwtMiddleware, user.checkJWT);
+
+    // 13. 회원 이름수정 API 
     app.patch('/users/name', jwtMiddleware, user.patchUsersName);
 
-    // 16. 회원 성별수정 API
+    // 14. 회원 성별수정 API
     app.patch('/users/sex', jwtMiddleware, user.patchUserSex);
 
-    // 17. 회원 생년월일수정 API
+    // 15. 회원 생년월일수정 API
     app.patch('/users/birth', jwtMiddleware, user.patchUserBirth);
 
-    // 18. 회원 이메일수정 API
+    // 16. 회원 이메일수정 API
     app.patch('/users/email', jwtMiddleware, user.patchUserEmail);
 
-    // 19. 회원 핸드폰 번호수정 API
+    // 17. 회원 핸드폰 번호수정 API
     app.patch('/users/phone-num/:phoneId', jwtMiddleware, user.patchUserPhone);
 
-    // 20. 회원 탈퇴 API
+    // 18. 회원 탈퇴 API
     app.patch('/users/status', jwtMiddleware, user.patchUserStatus);
 
-    // 24. JWT 검증 API
-    app.get('/users-auth/:userId', jwtMiddleware, user.checkJWT);
+    // 19. 리뷰 등록 API 
+    app.post('/reviews/:stayId', user.postReview);
+
+    // 27. 회원 전화번호 삭제 API
+    app.patch('/users/phone-num/:phoneId/status', jwtMiddleware, user.patchPhoneStatus);
 };

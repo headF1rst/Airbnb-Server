@@ -135,6 +135,14 @@ async function jwtUserCheck(connection, userId) {
   return UserRow[0];
 }
 
+async function updatePhoneStatus(connection, userIdFromJWT, phoneId) {
+  const updateUserQuery = `
+  UPDATE PhoneNumber
+  SET status = 'Deleted'
+  WHERE userId = ? and phoneId = ?;`;
+  const updateUserRow = await connection.query(updateUserQuery, [userIdFromJWT, phoneId]);
+  return updateUserRow[0];
+}
 
 module.exports = {
   selectUser,
@@ -150,4 +158,5 @@ module.exports = {
   updateUserPhone,
   updateUserStatus,
   jwtUserCheck,
+  updatePhoneStatus,
 };
