@@ -214,11 +214,20 @@ exports.patchUsersName = async function (req, res) {
  exports.postReview = async function (req, res) {
 
     const userIdFromJWT = req.verifiedToken.userId;
-    const { } = req.body;
+    const { comment, cleanRate, communicateRate, checkInRate, accurateRate, rocationRate, satisfiedRate } = req.body;
     const stayId = req.params.stayId;
 
-    const editUserInfo = await userService.editUserPhone(phoneNum, userIdFromJWT, phoneId);
-    return res.send(editUserInfo);
+    if(!cleanRate) return res.send(errResponse(baseResponse.CLEANRATE_EMPTY));
+    if(!communicateRate) return res.send(errResponse(baseResponse.COMMUNICATERATE_EMPTY));
+    if(!checkInRate) return res.send(errResponse(baseResponse.CHECKINRATE_EMPTY));
+    if(!accurateRate) return res.send(errResponse(baseResponse.ACCURATERATE_EMPTY));
+    if(!rocationRate) return res.send(errResponse(baseResponse.ROCATIONRATE_EMPTY));
+    if(!satisfiedRate) return res.send(errResponse(baseResponse.SATISFIEDRATE_EMPTY));
+
+
+    const params = [userIdFromJWT, stayId, comment, cleanRate, communicateRate, checkInRate, accurateRate, rocationRate, satisfiedRate];
+    const postRating = await userService.postReview(params);
+    return res.send(postRating);
 };
 
 /**

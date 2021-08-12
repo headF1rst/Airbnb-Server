@@ -95,6 +95,49 @@ const {emit} = require("nodemon");
 };
 
 /**
+ * API No. 5
+ * API Name : 숙소 상세조회 API
+ * [GET] /search-stay/:stayId
+ * body : address, checkIn, checkOut, guestNum
+ */
+exports.getStay = async function (req, res) {
+  var { stayId, address, checkIn, checkOut, guestNum, cancelPos, superHost, minPrice, maxPrice, category, bedCount, bedRoomCount, showerCount, petOk, smokingOk} = req.query;
+
+  if (!address) return res.send(errResponse(baseResponse.SEARCH_ADDRESS_EMPTY));
+
+  if(!minPrice) minPrice = 0;
+  if(!maxPrice) maxPrice = 9999;
+  if(!bedCount) bedCount = 0;
+  if(!bedRoomCount) bedRoomCount = 0;
+  if(!showerCount) showerCount = 0;
+  if (!guestNum) guestNum = 1;
+
+  if (!checkIn && checkOut) checkIn = decr_date(checkOut);
+  else if (checkIn && !checkOut) checkOut = incr_date(checkIn);
+
+  var searchResponse;
+  const addressForSearch = '%' + address + '%';
+  const checkInForSearch = checkIn + '%';
+  const checkOutForSearch = checkOut + '%';
+  const categoryForSearch = '%' + category + '%';
+  const cancelPosFS = '%' + cancelPos + '%';
+  const superHostFS= '%' + superHost + '%';
+  const petOkFS = '%' + petOk + '%';
+  const smokingOkFS = '%' + smokingOk + '%';
+
+  const params = [guestNum, addressForSearch, guestNum, cancelPosFS, superHostFS, minPrice, maxPrice, categoryForSearch, bedCount, bedRoomCount, showerCount, petOkFS, smokingOkFS, stayId,
+    checkInForSearch, checkInForSearch, checkOutForSearch, checkOutForSearch, checkInForSearch, checkOutForSearch];
+
+  const params2 = [addressForSearch, guestNum, cancelPosFS, superHostFS, minPrice, maxPrice, categoryForSearch, bedCount, bedRoomCount, showerCount, petOkFS, smokingOkFS, stayId];
+
+  if(!checkIn && !checkOut) searchResponse = await stayProvider.findStayDetailWithoutDate(params2);
+  else searchResponse = await stayProvider.findStayDetail(params);
+
+  return res.send(response(baseResponse.SUCCESS, searchResponse));
+};
+
+
+/**
  * API No. 6
  * API Name : 숙소등록 API
  * [POST] /hosts/stays
@@ -103,10 +146,33 @@ const {emit} = require("nodemon");
  exports.postStay = async function (req, res) {
 
   const userIdFromJWT = req.verifiedToken.userId;
-  const { categoryId, stayName, address, maxGuests, stayInfo, price, petOk, smokingOk, bedCount, bedRoomCount, showerCount, stayType, cancelPos, latitude, longitude } = req.body;
+  const { categoryId, stayName, address, maxGuests, stayInfo, price, petOk, smokingOk, bedCount, bedRoomCount, showerCount, stayType, cancelPos, latitude, longitude, imageURL1, imageURL2, imageURL3 } = req.body;
 
-  const params = [userIdFromJWT, categoryId, stayName, address, maxGuests, stayInfo, price, petOk, smokingOk, bedCount, bedRoomCount, showerCount, stayType, cancelPos, latitude, longitude]
-  const postBasketResponse = await stayService.postStay(params);
+  if(!categoryId || categoryId > 4) return res.send(errResponse(baseResponse.CATEGORYID_EMPTY));
+  if(!stayName) return res.send(errResponse(baseResponse.STAYNAME_EMPTY));
+  if(!address) return res.send(errResponse(baseResponse.ADDRESS_EMPTY));
+  if(!maxGuests) return res.send(errResponse(baseResponse.MAXGUESTS_EMPTY));
+  if(!stayInfo) return res.send(errResponse(baseResponse.STAYINFO_EMPTY));
+  if(!price) return res.send(errResponse(baseResponse.PRICE_EMPTY));
+  if(!petOk) return res.send(errResponse(baseResponse.PETOK_EMPTY));
+  if(!smokingOk) return res.send(errResponse(baseResponse.SMOKINGOK_EMPTY));
+  if(!bedCount) return res.send(errResponse(baseResponse.BEDCOUNT_EMPTY));
+  if(!bedRoomCount) return res.send(errResponse(baseResponse.BEDROOMCOUNT_EMPTY));
+  if(!showerCount) return res.send(errResponse(baseResponse.SHOWERCOUNT_EMPTY));
+  if(!stayType) return res.send(errResponse(baseResponse.STAYTYPE_EMPTY));
+  if(!cancelPos) return res.send(errResponse(baseResponse.CANCELPOS_EMPTY));
+  if(!latitude) return res.send(errResponse(baseResponse.LATITUDE_EMPTY));
+  if(!longitude) return res.send(errResponse(baseResponse.LONGITUDE_EMPTY));
+  if(!imageURL1) return res.send(errResponse(baseResponse.IMAGE_EMPTY));
+  if(!imageURL2) return res.send(errResponse(baseResponse.IMAGE_EMPTY));
+  if(!imageURL3) return res.send(errResponse(baseResponse.IMAGE_EMPTY));
+  
+
+  const params = [userIdFromJWT, categoryId, stayName, address, maxGuests, stayInfo, price, petOk, smokingOk, bedCount, bedRoomCount, showerCount, stayType, cancelPos, latitude, longitude];
+  const paramsImage = [imageURL1, imageURL2, imageURL3];
+
+  
+  const postBasketResponse = await stayService.postStay(params, paramsImage);
 
   return res.send(postBasketResponse);
 };
@@ -117,7 +183,7 @@ const {emit} = require("nodemon");
  * [PATCH] /hosts/stays/:stayId
  * 
  */
- exports.patchStayStatus = async function (req, res) {
+exports.patchStayStatus = async function (req, res) {
 
   const userIdFromJWT = req.verifiedToken.userId;
   const stayId = req.params.stayId;

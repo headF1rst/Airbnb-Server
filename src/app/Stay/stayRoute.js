@@ -5,6 +5,9 @@ module.exports = function(app){
     // 3. 숙소 검색 API
     app.get('/search', stay.searchStay);
 
+    // 5. 숙소상세조회 API
+    app.get('/search-stay', stay.getStay);
+
     // 6. 숙소등록 API
     app.post('/hosts/stays', jwtMiddleware, stay.postStay);
 

@@ -22,3 +22,21 @@ exports.findStay = async function (params)
   
     return searchResult;
 };
+
+exports.findStayDetailWithoutDate = async function (params2) 
+{
+    const connection = await pool.getConnection(async (conn) => conn);
+    const searchResult = await stayDao.selectStayDetailWithoutDate(connection, params2);
+    connection.release();
+  
+    return searchResult;
+};
+
+exports.findStayDetail = async function (params)
+{
+    const connection = await pool.getConnection(async (conn) => conn);
+    const searchResult = await stayDao.selectStayDetail(connection, params);
+    connection.release();
+  
+    return searchResult;
+};

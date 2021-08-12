@@ -86,7 +86,7 @@ exports.postSignIn = async function (email, password) {
             } // 유효 기간 365일
         );
         
-        return response(baseResponse.SUCCESS, {'jwt': token, 'userId': userInfoRows[0].userId, 'name':userInfoRows[0].name, 'email': email});
+        return response(baseResponse.SUCCESS, {'jwt': token, 'userId': userInfoRows[0].userId, 'name':userInfoRows[0].name, 'email': email, 'birth':userInfoRows[0].birth, 'sex' : userInfoRows[0].sex});
 
     } catch (err) {
         logger.error(`App - postSignIn Service error\n: ${err.message} \n${JSON.stringify(err)}`);
@@ -181,6 +181,19 @@ exports.editPhoneStatus = async function (userIdFromJWT, phoneId) {
         return response(baseResponse.SUCCESS);
     } catch (err) {
         logger.error(`App - editUser Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
+exports.postReview = async function (params) {
+    try {
+        const connection = await pool.getConnection(async (conn) => conn);
+        const postResult = await userDao.postRating(connection, params);
+        connection.release();
+
+        return response(baseResponse.SUCCESS);
+    } catch (err) {
+        logger.error(`App - Posting Review Service error\n: ${err.message}`);
         return errResponse(baseResponse.DB_ERROR);
     }
 }

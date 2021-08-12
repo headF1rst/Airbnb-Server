@@ -61,7 +61,7 @@ async function selectUserPassword(connection, selectUserPasswordParams) {
 // 유저 계정 상태 체크 (jwt 생성 위해 id 값도 가져온다.)
 async function selectUserAccount(connection, email) {
   const selectUserAccountQuery = `
-        SELECT name, userId, status
+        SELECT name, userId, status, birth, sex
         FROM User
         WHERE email = ?;`;
   const selectUserAccountRow = await connection.query(
@@ -144,6 +144,16 @@ async function updatePhoneStatus(connection, userIdFromJWT, phoneId) {
   return updateUserRow[0];
 }
 
+// 유저 생성
+async function postRating(connection, params) {
+  const query = `
+        INSERT INTO Review(userId, stayId, comment, cleanRate, communicateRate, checkInRate, accurateRate, rocationRate, satisfiedRate)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+    `;
+  const reviewRow = await connection.query(query, params);
+  return reviewRow;
+}
+
 module.exports = {
   selectUser,
   selectUserEmail,
@@ -159,4 +169,5 @@ module.exports = {
   updateUserStatus,
   jwtUserCheck,
   updatePhoneStatus,
+  postRating,
 };

@@ -88,7 +88,7 @@ module.exports = function(app){
     app.patch('/users/status', jwtMiddleware, user.patchUserStatus);
 
     // 19. 리뷰 등록 API 
-    app.post('/reviews/:stayId', user.postReview);
+    app.post('/reviews/:stayId', jwtMiddleware, user.postReview);
 
     // 27. 회원 전화번호 삭제 API
     app.patch('/users/phone-num/:phoneId/status', jwtMiddleware, user.patchPhoneStatus);

@@ -11,13 +11,27 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const {connect} = require("http2");
 
-exports.postStay = async function (userIdFromJWT, params) {
+exports.postStay = async function (params, paramsImage) {
     try {
         const connection = await pool.getConnection(async (conn) => conn);
-        const postRoomResult = await stayDao.postRoom(connection, userIdFromJWT, params);
-        connection.release();
-
-        return response(baseResponse.SUCCESS);
+        try {
+            connection.beginTransaction(); // 트랜잭션 적용 시작
+            const postRoomResult = await stayDao.postRoom(connection, params);
+            
+            for(var i=0; i<3; i++)
+            {
+                var postImageURL = await stayDao.postImageURL(connection, postRoomResult.insertId, paramsImage[i]);
+            }
+            await connection.commit(); // 커밋
+            connection.release(); // conn 회수
+            connection.release();
+            
+            return response(baseResponse.SUCCESS);
+        } catch (err) {
+            await connection.rollback(); // 롤백
+            connection.release(); // conn 회수
+            return errResponse(baseResponse.DB_ERROR);
+        }
     } catch (err) {
         logger.error(`App - Posting Room Service error\n: ${err.message}`);
         return errResponse(baseResponse.DB_ERROR);
