@@ -155,13 +155,13 @@ exports.getStay = async function (req, res) {
   if(!maxGuests) return res.send(errResponse(baseResponse.MAXGUESTS_EMPTY));
   if(!stayInfo) return res.send(errResponse(baseResponse.STAYINFO_EMPTY));
   if(!price) return res.send(errResponse(baseResponse.PRICE_EMPTY));
-  if(petOk == null) return res.send(errResponse(baseResponse.PETOK_EMPTY));
-  if(smokingOk == null) return res.send(errResponse(baseResponse.SMOKINGOK_EMPTY));
+  if(!petOk) return res.send(errResponse(baseResponse.PETOK_EMPTY));
+  if(!smokingOk) return res.send(errResponse(baseResponse.SMOKINGOK_EMPTY));
   if(!bedCount) return res.send(errResponse(baseResponse.BEDCOUNT_EMPTY));
   if(!bedRoomCount) return res.send(errResponse(baseResponse.BEDROOMCOUNT_EMPTY));
   if(!showerCount) return res.send(errResponse(baseResponse.SHOWERCOUNT_EMPTY));
   if(!stayType) return res.send(errResponse(baseResponse.STAYTYPE_EMPTY));
-  if(cancelPos == null) return res.send(errResponse(baseResponse.CANCELPOS_EMPTY));
+  if(!cancelPos) return res.send(errResponse(baseResponse.CANCELPOS_EMPTY));
   if(!latitude) return res.send(errResponse(baseResponse.LATITUDE_EMPTY));
   if(!longitude) return res.send(errResponse(baseResponse.LONGITUDE_EMPTY));
   if(!imageURL1) return res.send(errResponse(baseResponse.IMAGE_EMPTY));
