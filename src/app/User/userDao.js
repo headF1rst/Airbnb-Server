@@ -154,6 +154,16 @@ async function postRating(connection, params) {
   return reviewRow;
 }
 
+//소셜 로그인 유저 생성
+async function insertSocialUserInfo(connection, insertUserInfoParams) {
+  const insertUserInfoQuery = `
+        INSERT INTO User(name, email)
+        VALUES ( ?, ?);
+    `;
+  const insertUserInfoRow = await connection.query(insertUserInfoQuery, insertUserInfoParams);
+  return insertUserInfoRow;
+}
+
 module.exports = {
   selectUser,
   selectUserEmail,
@@ -170,4 +180,5 @@ module.exports = {
   jwtUserCheck,
   updatePhoneStatus,
   postRating,
+  insertSocialUserInfo,
 };

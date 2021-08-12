@@ -65,6 +65,8 @@ module.exports = {
     LATITUDE_EMPTY : { "isSuccess": false, "code": 2050, "message": "위도값을 입력해주세요"},
     LONGITUDE_EMPTY : { "isSuccess": false, "code": 2051, "message": "경도값을 입력해주세요"},
     IMAGE_EMPTY : { "isSuccess": false, "code": 2052, "message": "기본 이미지 3장을 포함해야합니다."},
+    USER_ACCESS_TOKEN_WRONG : { "isSuccess": false, "code": 2053, "message": "엑세스 토큰값을 다시 입력해주세요."},
+    USER_INFO_EMPTY : { "isSuccess": false, "code": 2054, "message": "유저 정보가 비어있습니다."},
 
 
 

@@ -4,6 +4,8 @@ const userService = require("../../app/User/userService");
 const baseResponse = require("../../../config/baseResponseStatus");
 const {response, errResponse} = require("../../../config/response");
 const regexEmail = require("regex-email");
+const { logger } = require('../../../config/winston');
+const axios = require('axios');
 const {emit} = require("nodemon");
 
 // 생년월일 yyyy/mm/dd, over 18 validation check
@@ -261,17 +263,16 @@ exports.patchUsersName = async function (req, res) {
     return res.send(response(baseResponse.SUCCESS, checkUser));
 };
 
-/**
- * API No. 25
- * API Name : 페이스북 로그인 API
- * [GET] /login/facebook
+/** API No.25
+ * API Name : 카카오 로그인
+ * [POST] /app/login/kakao
  */
- exports.loginFacebook = async function (req, res) {
+ exports.loginKakao = async function (req, res) {
     const { accessToken } = req.body;
     try {
-        let facebook_profile;
+        let kakao_profile;
         try {
-            facebook_profile = await axios.get('https://kapi.kakao.com/v2/user/me', {
+            kakao_profile = await axios.get('https://kapi.kakao.com/v2/user/me', {
                 headers: {
                     Authorization: 'Bearer ' + accessToken,
                     'Content-Type': 'application/json',
@@ -279,18 +280,18 @@ exports.patchUsersName = async function (req, res) {
             });
         } catch (err) {
             logger.error(`Can't get kakao profile\n: ${JSON.stringify(err)}`);
-            return res.send(errResponse(baseResponse.USER_COMMENT_EMPTY));
+            return res.send(errResponse(baseResponse.USER_ACCESS_TOKEN_WRONG));
         }
 
-        const email = kakao_profile.data.kakao_account.profile.nickname;
-        const Id = kakao_profile.data.kakao_account.email;
-        const IdRows = await userProvider.IdCheck(Id);
+        const name = kakao_profile.data.kakao_account.profile.nickname;
+        const email = kakao_profile.data.kakao_account.email;
+        const emailRows = await userProvider.emailCheck(email);
         // 이미 존재하는 이메일인 경우 = 회원가입 되어 있는 경우 -> 로그인 처리
-        if (IdRows.length > 0) {
-            const userInfoRows = await userProvider.accountCheck(Id);
+        if (emailRows.length > 0) {
+            const userInfoRows = await userProvider.accountCheck(email);
             const token = await jwt.sign(
                 {
-                    userId: userInfoRows[0].userId,
+                    userId: userInfoRows[0].id,
                 },
                 secret_config.jwtsecret,
                 {
@@ -299,17 +300,18 @@ exports.patchUsersName = async function (req, res) {
                 },
             );
 
-            const result = { jwt: token, userId: userInfoRows[0].userId };
+            const result = { userId: userInfoRows[0].id, jwt: token };
             return res.send(response(baseResponse.SUCCESS, result));
             // 그렇지 않은 경우 -> 회원가입 처리
         } else {
             const result = {
-                Id: Id,
+                name: name,
                 email: email,
-                loginStatus: 'K',
+                loginStatus: 'KAKAO',
             };
-            const signUpResponse = await userService.createSocialUser(
-                Id,
+
+            const signUpResponse = await userService.postSocialUser(
+                name,
                 email,
                 result.loginStatus,
             );
@@ -317,7 +319,7 @@ exports.patchUsersName = async function (req, res) {
         }
     } catch (err) {
         logger.error(`App - logInKakao Query error\n: ${JSON.stringify(err)}`);
-        return res.send(errResponse(baseResponse.USER_CONTENTS_EMPTY));
+        return res.send(errResponse(baseResponse.USER_INFO_EMPTY));
     }
 };
 
