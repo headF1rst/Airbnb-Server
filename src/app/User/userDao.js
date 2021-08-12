@@ -164,6 +164,17 @@ async function insertSocialUserInfo(connection, insertUserInfoParams) {
   return insertUserInfoRow;
 }
 
+// 회원 상태정보 확인
+async function checkUserStatus(connection, userIdFromJWT) {
+  const query = `
+        select status
+        from User
+        where userId = ?
+    `;
+  const insertUserInfoRow = await connection.query(query, userIdFromJWT);
+  return insertUserInfoRow;
+}
+
 module.exports = {
   selectUser,
   selectUserEmail,
@@ -181,4 +192,5 @@ module.exports = {
   updatePhoneStatus,
   postRating,
   insertSocialUserInfo,
+  checkUserStatus,
 };

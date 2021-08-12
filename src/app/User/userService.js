@@ -162,7 +162,10 @@ exports.editUserPhone = async function (phone, userIdFromJWT, phoneId) {
 exports.editUserStatus = async function (userIdFromJWT) {
     try {
         const connection = await pool.getConnection(async (conn) => conn);
+        const check = await userDao.checkUserStatus(connection,userIdFromJWT);
+        if(check.status == 'Deleted') return res.send(errResponse(baseResponse.USER_DELETED));
         const editUserResult = await userDao.updateUserStatus(connection,userIdFromJWT);
+
         connection.release();
 
         return response(baseResponse.SUCCESS);

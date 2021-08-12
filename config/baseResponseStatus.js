@@ -67,6 +67,8 @@ module.exports = {
     IMAGE_EMPTY : { "isSuccess": false, "code": 2052, "message": "기본 이미지 3장을 포함해야합니다."},
     USER_ACCESS_TOKEN_WRONG : { "isSuccess": false, "code": 2053, "message": "엑세스 토큰값을 다시 입력해주세요."},
     USER_INFO_EMPTY : { "isSuccess": false, "code": 2054, "message": "유저 정보가 비어있습니다."},
+    INACTIVE_ROOM : { "isSuccess": false, "code": 2055, "message": "숙소가 존재하지 않습니다."},
+    USER_DELETED : { "isSuccess": false, "code": 2056, "message": "이미 탈퇴한 회원정보 입니다."},
 
 
 

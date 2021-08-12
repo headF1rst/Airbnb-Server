@@ -133,6 +133,7 @@ exports.getStay = async function (req, res) {
   if(!checkIn && !checkOut) searchResponse = await stayProvider.findStayDetailWithoutDate(params2);
   else searchResponse = await stayProvider.findStayDetail(params);
 
+  if (!searchResponse[0].result) return errResponse(baseResponse.INACTIVE_ROOM);
   return res.send(response(baseResponse.SUCCESS, searchResponse));
 };
 

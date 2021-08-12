@@ -25,15 +25,6 @@ exports.findStay = async function (params)
 {
     const connection = await pool.getConnection(async (conn) => conn);
     const searchResult = await stayDao.selectStay(connection, params);
-    //var imageComb = new Array();
-
-    // for(var i = 0; ; i++)
-    // {
-    //     if(!searchResult[i].imageURL) break;
-    //     imageComb[i] = searchResult[i].imageURL;
-    //     console.log(imageComb[i]);
-    //     console.log(searchResult[i].stayName);
-    // }
 
     connection.release();
   
