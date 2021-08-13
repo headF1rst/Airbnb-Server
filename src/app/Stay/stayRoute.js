@@ -37,4 +37,7 @@ module.exports = function(app){
 
     // 34. 호스트 코멘트 수정 API
    app.patch('/hostcommet/:stayId', jwtMiddleware, stay.patchHostCmmt);
+
+   // 35. 숙소 예약 API
+   app.post('/booking/:stayId', jwtMiddleware, stay.Book);
 };

@@ -320,8 +320,26 @@ exports.patchStayStatus = async function (req, res) {
   const userIdFromJWT = req.verifiedToken.userId;
   const stayId = req.params.stayId;
   const { hostComment } = req.body;
-  console.log(hostComment);
 
   const cmmtResponse = await stayService.patchHostCmmt(hostComment, stayId, userIdFromJWT);
   return res.send(cmmtResponse);
+};
+
+// **
+//  * API No. 35
+//  * API Name : 숙소 예약 API
+//  * [POST] /booking/:stayId
+//  * path : stayId
+//  */
+ exports.Book = async function (req, res) {
+
+  const userIdFromJWT = req.verifiedToken.userId;
+  const stayId = req.params.stayId;
+  const { checkIn, checkOut } = req.body;
+  
+  if(!checkIn) res.send(errResponse(baseResponse.CHECKIN_EMPTY));
+  if(!checkOut) res.send(errResponse(baseResponse.CHECKOUT_EMPTY));
+
+  const bookResponse = await stayService.postBooking(stayId, userIdFromJWT, checkIn, checkOut);
+  return res.send(bookResponse);
 };

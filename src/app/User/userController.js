@@ -312,8 +312,7 @@ exports.patchUsersName = async function (req, res) {
 
             const signUpResponse = await userService.postSocialUser(
                 name,
-                email,
-                result.loginStatus,
+                email
             );
             return res.send(response(baseResponse.SUCCESS, result));
         }

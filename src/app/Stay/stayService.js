@@ -182,3 +182,18 @@ exports.patchHostCmmt = async function (cmmt, stayId, userIdFromJWT) {
         return errResponse(baseResponse.DB_ERROR);
     }
 }
+
+exports.postBooking = async function (stayId, userIdFromJWT, checkIn, checkOut) {
+    try {
+        const connection = await pool.getConnection(async (conn) => conn);
+        const bookCheckResult = await stayDao.checkDatePos(connection, stayId, checkIn, checkIn, checkOut, checkOut, checkIn, checkOut);
+        if(!bookCheckResult) return errResponse(baseResponse.NO_BOOKPOS_DATE);
+        const checkResult = await stayDao.checkDate(connection, stayId, userIdFromJWT, checkIn, checkOut);
+        connection.release();
+
+        return response(baseResponse.SUCCESS);
+    } catch (err) {
+        logger.error(`App - Booking Room Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}

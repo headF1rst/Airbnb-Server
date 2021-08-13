@@ -244,6 +244,29 @@ async function editHostCmmt(connection, cmmt, stayId, userIdFromJWT)
     return selectRoomsRows;
 }
 
+// 예약 가능 날짜 확인
+async function checkDatePos(connection, stayId, checkIn, checkIn, checkOut, checkOut, checkIn, checkOut) 
+{
+    const query = `
+    select stayId, checkIn, checkOut
+    from Booking
+    where stayId = ? and (checkIn <= ? and checkOut >= ?) or (checkIn < ? and checkOut >= ?) or (? <= checkIn and ? >= checkIn);
+          `;
+    const [selectRoomsRows] = await connection.query(query, [stayId, checkIn, checkIn, checkOut, checkOut, checkIn, checkOut]);
+    return selectRoomsRows;
+}
+
+// 예약 가능 날짜 확인
+async function checkDate(connection, userId, stayId, checkIn, checkOut) 
+{
+    const query = `
+    INSERT INTO Booking(userId, stayId, checkIn, checkOut)
+    VALUES (?, ?, ?, ?);
+          `;
+    const [selectRoomsRows] = await connection.query(query, [userId, stayId, checkIn, checkOut]);
+    return selectRoomsRows;
+}
+
 module.exports = {
     selectStayWithoutDate,
     selectStay,
@@ -262,4 +285,6 @@ module.exports = {
     postImageURL,
     selectStayDetailWithoutDate,
     selectStayDetail,
+    checkDate,
+    checkDatePos,
 }

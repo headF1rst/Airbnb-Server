@@ -69,6 +69,8 @@ module.exports = {
     USER_INFO_EMPTY : { "isSuccess": false, "code": 2054, "message": "유저 정보가 비어있습니다."},
     INACTIVE_ROOM : { "isSuccess": false, "code": 2055, "message": "숙소가 존재하지 않습니다."},
     USER_DELETED : { "isSuccess": false, "code": 2056, "message": "이미 탈퇴한 회원정보 입니다."},
+    CHECKIN_EMPTY : { "isSuccess": false, "code": 2057, "message": "숙소 체크인 날짜를 입력해주세요."},
+    CHECKOUT_EMPTY : { "isSuccess": false, "code": 2058, "message": "숙소 체크아웃 날짜를 입력해주세요."},
 
 
 
@@ -80,6 +82,8 @@ module.exports = {
     SIGNIN_PASSWORD_WRONG : { "isSuccess": false, "code": 3004, "message": "비밀번호가 잘못 되었습니다." },
     SIGNIN_INACTIVE_ACCOUNT : { "isSuccess": false, "code": 3005, "message": "비활성화 된 계정입니다. 고객센터에 문의해주세요." },
     SIGNIN_WITHDRAWAL_ACCOUNT : { "isSuccess": false, "code": 3006, "message": "탈퇴 된 계정입니다. 고객센터에 문의해주세요." },
+    NO_BOOKPOS_DATE : { "isSuccess": false, "code": 3007, "message": "예약 가능한 날짜가 없습니다." },
+
 
     //Connection, Transaction 등의 서버 오류
     DB_ERROR : { "isSuccess": false, "code": 4000, "message": "데이터 베이스 에러"},

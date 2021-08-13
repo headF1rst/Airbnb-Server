@@ -202,13 +202,14 @@ exports.postReview = async function (params) {
 }
 
 //카카오 소셜 회원 가입
-exports.postSocialUser = async function (name, email, loginStatus) {
+exports.postSocialUser = async function (name, email) {
     try {
         // email 중복 확인
         const emailRows = await userProvider.emailCheck(email);
         if (emailRows.length > 0) return errResponse(baseResponse.SIGNUP_REDUNDANT_EMAIL);
 
         const insertSocialUserInfoParams = [name, email];
+        console.log(1);
 
         const connection = await pool.getConnection(async (conn) => conn);
 
