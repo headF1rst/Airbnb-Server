@@ -104,7 +104,6 @@ exports.getStay = async function (req, res) {
   var { stayId, address, checkIn, checkOut, guestNum, cancelPos, superHost, minPrice, maxPrice, category, bedCount, bedRoomCount, showerCount, petOk, smokingOk} = req.query;
 
   if (!address) return res.send(errResponse(baseResponse.SEARCH_ADDRESS_EMPTY));
-
   if(!minPrice) minPrice = 0;
   if(!maxPrice) maxPrice = 9999;
   if(!bedCount) bedCount = 0;
@@ -132,8 +131,8 @@ exports.getStay = async function (req, res) {
 
   if(!checkIn && !checkOut) searchResponse = await stayProvider.findStayDetailWithoutDate(params2);
   else searchResponse = await stayProvider.findStayDetail(params);
-
-  if (!searchResponse[0].result) return errResponse(baseResponse.INACTIVE_ROOM);
+  console.log(searchResponse[0]);
+  
   return res.send(response(baseResponse.SUCCESS, searchResponse));
 };
 
