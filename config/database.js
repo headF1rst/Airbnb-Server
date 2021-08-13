@@ -19,7 +19,7 @@ else if(process.env.NODE_ENV == 'production')
         user: 'admin',
         port: '3306',
         password: 'Kershaw22!',
-        database: 'airbnbDB-dev'
+        database: 'airbnbDB-prod'
     });
 }
 
